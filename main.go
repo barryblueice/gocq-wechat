@@ -72,8 +72,7 @@ func login_requests(bot *openwechat.Bot, reloadStorage openwechat.HotReloadStora
 			log.Println("请扫描二维码登录：")
 			err = bot.HotLogin(reloadStorage, openwechat.NewRetryLoginOption())
 			if err != nil {
-				log.Printf("登录失败！错误：%s！", err)
-				os.Exit(1)
+				log.Fatalf("登录失败！错误：%s！", err)
 			}
 		} else {
 			log.Println("登录成功")
@@ -85,8 +84,7 @@ func login_requests(bot *openwechat.Bot, reloadStorage openwechat.HotReloadStora
 		log.Println("请扫描二维码登录：")
 		err = bot.HotLogin(reloadStorage, openwechat.NewRetryLoginOption())
 		if err != nil {
-			log.Printf("登录失败！错误：%s！", err)
-			os.Exit(1)
+			log.Fatalf("登录失败！错误：%s！", err)
 		}
 	}
 	return err
@@ -115,7 +113,6 @@ URL = ""
 		log.Println("环境文件已成功创建并写入默认值，请修改环境文件默认值后重新启动client")
 		if err != nil {
 			log.Fatalf("无法创建环境文件文件: %v", err)
-			os.Exit(1)
 		}
 		os.Exit(1)
 	}
@@ -123,7 +120,6 @@ URL = ""
 	err := godotenv.Load(".env")
 	if err != nil {
 		log.Fatalf("无法加载环境文件文件: %v", err)
-		os.Exit(1)
 	}
 
 	LOGIN_MODE := os.Getenv("LOGIN_MODE")
@@ -132,13 +128,10 @@ URL = ""
 
 	if isEmpty(strings.TrimSpace(LOGIN_MODE)) {
 		log.Fatalf("LOGIN_MODE不能为空，请检查参数！")
-		os.Exit(1)
 	} else if isEmpty(strings.TrimSpace(PORT)) {
 		log.Fatalf("PORT不能为空，请检查参数！")
-		os.Exit(1)
 	} else if isEmpty(strings.TrimSpace(URL)) {
 		log.Fatalf("URL不能为空，请检查参数！")
-		os.Exit(1)
 	}
 
 	return LOGIN_MODE, PORT, URL
@@ -159,7 +152,6 @@ func main() {
 		bot = openwechat.DefaultBot()
 	} else {
 		log.Fatalf("LOGIN_MODE参数不合法，请检查参数！")
-		os.Exit(1)
 	}
 
 	log.Printf("登录模式：%s", LOGIN_MODE)
@@ -169,12 +161,10 @@ func main() {
 	TargetPort, err := strconv.Atoi(PORT)
 
 	if err != nil {
-		log.Fatal("端口参数不合法，请检查参数！")
-		os.Exit(1)
+		log.Fatalf("端口参数不合法，请检查参数！")
 	}
 	if TargetPort < 0 && TargetPort > 65535 {
-		log.Fatal("端口参数不合法，请检查参数！")
-		os.Exit(1)
+		log.Fatalf("端口参数不合法，请检查参数！")
 	}
 
 	log.Printf("端口号：%s", PORT)
@@ -190,14 +180,12 @@ func main() {
 	defer reloadStorage.Close()
 	err = login_requests(bot, reloadStorage)
 	if err != nil {
-		log.Printf("登录失败！错误：%s！", err)
-		os.Exit(1)
+		log.Fatalf("登录失败！错误：%s！", err)
 	}
 
 	self, err := bot.GetCurrentUser()
 	if err != nil {
-		log.Printf("登录信息获取失败！错误：%s！", err)
-		os.Exit(1)
+		log.Fatalf("登录信息获取失败！错误：%s！", err)
 	}
 
 	// 登录成功后
@@ -224,6 +212,16 @@ func main() {
 				if msg.IsAt() {
 					IsAt = true
 				}
+
+				if sender == nil {
+					log.Printf("sender is nil")
+					return
+				}
+				if group == nil {
+					log.Printf("group is nil")
+					return
+				}
+
 				log.Printf("用户 %s 于群聊 %s（%s）发送消息：%s", sender.NickName, group.NickName, group.ID(), MsgDetail)
 				if conn != nil {
 					RecieveGroupText(self, 0, sender.ID(), MsgDetail, group.ID(), IsAt)

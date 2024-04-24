@@ -77,12 +77,12 @@ func RecievePrivateText(self *openwechat.Self, MsgID int32, SenderID string, mes
 	}
 	msgJSON, err := json.Marshal(msg)
 	if err != nil {
-		log.Fatalf("无法序列化消息: %v", err)
+		log.Printf("无法序列化消息: %v", err)
 	}
 
 	err = conn.WriteMessage(websocket.TextMessage, msgJSON)
 	if err != nil {
-		log.Fatalf("发送消息失败: %v", err)
+		log.Printf("发送消息失败: %v", err)
 	}
 }
 
@@ -118,11 +118,11 @@ func RecieveGroupText(self *openwechat.Self, MsgID int32, SenderID string, messa
 	}
 	msgJSON, err := json.Marshal(msg)
 	if err != nil {
-		log.Fatalf("无法序列化消息: %v", err)
+		log.Printf("无法序列化消息: %v", err)
 	}
 
 	err = conn.WriteMessage(websocket.TextMessage, msgJSON)
 	if err != nil {
-		log.Fatalf("发送消息失败: %v", err)
+		log.Printf("发送消息失败: %v", err)
 	}
 }
