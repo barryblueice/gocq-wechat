@@ -2,8 +2,10 @@ package main
 
 import (
 	"encoding/json"
+	"fmt"
 	"log"
 	"strconv"
+	"strings"
 	"time"
 
 	"github.com/eatmoreapple/openwechat"
@@ -84,10 +86,20 @@ func RecievePrivateText(self *openwechat.Self, MsgID int32, SenderID string, mes
 	}
 }
 
-func RecieveGroupText(self *openwechat.Self, MsgID int32, SenderID string, message string, GroupID string) {
+func RecieveGroupText(self *openwechat.Self, MsgID int32, SenderID string, message string, GroupID string, IsAt bool) {
 	timestamp := get_timestamp()
 	TargetSenderID, _ := strconv.ParseInt(SenderID, 10, 64)
 	TargetGroupID, _ := strconv.ParseInt(GroupID, 10, 64)
+
+	var CQMessage string
+
+	message = strings.ReplaceAll(message, fmt.Sprintf("@%s", self.NickName), "")
+
+	if IsAt {
+		CQMessage = fmt.Sprintf("[CQ:at,qq=%d]%s", self.ID(), message)
+	} else {
+		CQMessage = message
+	}
 
 	msg := GroupMessage{
 		Time:        int64(timestamp),
@@ -97,7 +109,7 @@ func RecieveGroupText(self *openwechat.Self, MsgID int32, SenderID string, messa
 		SubType:     "normal",
 		GroupID:     TargetGroupID,
 		UserID:      TargetSenderID,
-		Message:     message,
+		Message:     CQMessage,
 		RawMessage:  message,
 		Font:        14,
 		Sender: Sender{

@@ -209,19 +209,24 @@ func main() {
 	go WebsocketReverseInit(URL, SelfID, self)
 	// go FriendListInit(self)
 	bot.MessageHandler = func(msg *openwechat.Message) {
-		if isEmpty(msg.Content) != true {
+		MsgDetail := msg.Content
+		if isEmpty(MsgDetail) != true {
 			if msg.IsSendByFriend() {
 				sender, _ := msg.Sender()
-				log.Printf("用户 %s（%s）发送私聊消息：%s", sender.NickName, sender.ID(), msg.Content)
+				log.Printf("用户 %s（%s）发送私聊消息：%s", sender.NickName, sender.ID(), MsgDetail)
 				if conn != nil {
-					RecievePrivateText(self, 0, sender.ID(), msg.Content)
+					RecievePrivateText(self, 0, sender.ID(), MsgDetail)
 				}
 			} else if msg.IsSendByGroup() {
+				IsAt := false
 				group, _ := msg.Sender()
 				sender, _ := msg.SenderInGroup()
-				log.Printf("用户 %s 于群聊 %s（%s）发送消息：%s", sender.NickName, group.NickName, group.ID(), msg.Content)
+				if msg.IsAt() {
+					IsAt = true
+				}
+				log.Printf("用户 %s 于群聊 %s（%s）发送消息：%s", sender.NickName, group.NickName, group.ID(), MsgDetail)
 				if conn != nil {
-					RecieveGroupText(self, 0, sender.ID(), msg.Content, group.ID())
+					RecieveGroupText(self, 0, sender.ID(), MsgDetail, group.ID(), IsAt)
 				}
 			}
 		}

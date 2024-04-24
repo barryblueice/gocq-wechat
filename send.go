@@ -25,7 +25,7 @@ type GroupSendReturnStatus struct {
 	Echo    interface{} `json:"echo"`
 }
 
-func SendPrivate(self *openwechat.Self, data map[string]interface{}, text string) {
+func SendPrivateText(self *openwechat.Self, data map[string]interface{}, text string) {
 	params, _ := data["params"].(map[string]interface{})
 	TargetIDFloat64, _ := params["user_id"].(float64)
 	TargetID := strconv.Itoa(int(TargetIDFloat64))
@@ -51,7 +51,7 @@ func SendPrivate(self *openwechat.Self, data map[string]interface{}, text string
 	}
 }
 
-func SendGroup(self *openwechat.Self, data map[string]interface{}, text string) {
+func SendGroupText(self *openwechat.Self, data map[string]interface{}, text string) {
 	params, _ := data["params"].(map[string]interface{})
 	TargetIDFloat64, _ := params["group_id"].(float64)
 	TargetID := strconv.Itoa(int(TargetIDFloat64))
@@ -87,9 +87,9 @@ func SendHandle(self *openwechat.Self, conn *websocket.Conn, msgJSON []byte) {
 	text, _ := textData["text"].(string)
 
 	if messageType == "private" {
-		SendPrivate(self, data, text)
+		SendPrivateText(self, data, text)
 	} else if messageType == "group" {
-		SendGroup(self, data, text)
+		SendGroupText(self, data, text)
 	} else {
 		log.Fatalf("发送消息失败: 无法解析发送对象")
 	}
