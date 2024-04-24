@@ -2,3 +2,4 @@
 login_token.json
 .vscode
 .gitignore
+.release
