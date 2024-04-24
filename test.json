@@ -1,0 +1,4 @@
+{"action":"send_msg", 
+"echo":"5",
+"params":{
+    "message":[{"data":{"text":"爱丽丝不懂老师在说什么，脑袋要宕机了……(＠_＠;)"} "type":"text"},{"data":{"cache":"true", "file":"file:///D:/Documents/Test_Bot/src/plugins/pic/resources/unknown.jpg","proxy":"true","timeout":"<nil>","type":"<nil>"}"type":"image"}},"message_type":"private","user_id":"6.20306329e+08}}

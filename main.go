@@ -195,10 +195,10 @@ func main() {
 	SelfNickname := self.NickName
 	log.Printf("欢迎回来！用户：%s，wxid：%s", SelfNickname, SelfID)
 	go WebsocketReverseInit(URL, SelfID, self)
-	// go FriendListInit(self)
+	// 主进程，处理消息
 	bot.MessageHandler = func(msg *openwechat.Message) {
 		MsgDetail := msg.Content
-		if isEmpty(MsgDetail) != true {
+		if !isEmpty(MsgDetail) {
 			if msg.IsSendByFriend() {
 				sender, _ := msg.Sender()
 				log.Printf("用户 %s（%s）发送私聊消息：%s", sender.NickName, sender.ID(), MsgDetail)

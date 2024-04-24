@@ -11,6 +11,8 @@ import (
 
 var conn *websocket.Conn
 
+// 反向连接总事件触发
+
 func WebsocketReverseInit(connURL string, SelfID string, self *openwechat.Self) {
 
 	for {

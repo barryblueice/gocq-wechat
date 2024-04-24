@@ -11,6 +11,8 @@ import (
 	"github.com/gorilla/websocket"
 )
 
+// 返回定义
+
 type PrivateSendReturnStatus struct {
 	Status  string      `json:"status"`
 	Retcode int         `json:"retcode"`
@@ -26,6 +28,8 @@ type GroupSendReturnStatus struct {
 	Message string      `json:"message"`
 	Echo    interface{} `json:"echo"`
 }
+
+// 不同类型的发送
 
 func SendPrivateText(self *openwechat.Self, data map[string]interface{}, text string) {
 	params, _ := data["params"].(map[string]interface{})
@@ -137,37 +141,42 @@ func SendGroupLocalImg(self *openwechat.Self, data map[string]interface{}, Local
 	}
 }
 
+// 发送总处理
+
 func SendHandle(self *openwechat.Self, conn *websocket.Conn, msgJSON []byte) {
 	var data map[string]interface{}
 	json.Unmarshal(msgJSON, &data)
 	params, _ := data["params"].(map[string]interface{})
 	SendingType, _ := params["message_type"].(string)
-	message, _ := params["message"].([]interface{})[0].(map[string]interface{})
-	Data, _ := message["data"].(map[string]interface{})
-	text, _ := Data["text"].(string)
-	LocalFile, _ := Data["file"].(string)
-	messageType, _ := message["type"].(string)
+	messages, _ := params["message"].([]interface{})
 
-	// fmt.Println(Data)
-	// fmt.Println(LocalFile)
+	// fmt.Println(data)
 
-	if SendingType == "private" {
-		if messageType == "text" {
-			SendPrivateText(self, data, text)
-		} else if messageType == "image" {
-			SendPrivateLocalImg(self, data, LocalFile)
+	for _, msg := range messages {
+		message := msg.(map[string]interface{})
+		Data, _ := message["data"].(map[string]interface{})
+		text, _ := Data["text"].(string)
+		LocalFile, _ := Data["file"].(string)
+		messageType, _ := message["type"].(string)
+
+		if SendingType == "private" {
+			if messageType == "text" {
+				SendPrivateText(self, data, text)
+			} else if messageType == "image" {
+				SendPrivateLocalImg(self, data, LocalFile)
+			} else {
+				log.Println("发送消息失败: 无法解析发送对象")
+			}
+		} else if SendingType == "group" {
+			if messageType == "text" {
+				SendGroupText(self, data, text)
+			} else if messageType == "image" {
+				SendGroupLocalImg(self, data, LocalFile)
+			} else {
+				log.Println("发送消息失败: 无法解析发送对象")
+			}
 		} else {
 			log.Println("发送消息失败: 无法解析发送对象")
 		}
-	} else if SendingType == "group" {
-		if messageType == "text" {
-			SendGroupText(self, data, text)
-		} else if messageType == "image" {
-			SendGroupLocalImg(self, data, LocalFile)
-		} else {
-			log.Println("发送消息失败: 无法解析发送对象")
-		}
-	} else {
-		log.Println("发送消息失败: 无法解析发送对象")
 	}
 }

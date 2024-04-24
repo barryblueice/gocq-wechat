@@ -12,6 +12,8 @@ import (
 	"github.com/gorilla/websocket"
 )
 
+// 接收消息类型定义
+
 type PrivateMessage struct {
 	Time        int64  `json:"time"`
 	SelfID      int64  `json:"self_id"`
@@ -57,6 +59,8 @@ func get_timestamp() int {
 	}
 	return timestampInt
 }
+
+// 消息接收事件
 
 func RecievePrivateText(self *openwechat.Self, MsgID int32, SenderID string, message string) {
 	timestamp := get_timestamp()

@@ -1,6 +1,8 @@
-import subprocess
+import subprocess,shutil
 
 target_file = "main.go recieve.go send.go WebsocketReverse.go"
+
+shutil.rmtree(".\\release")
 
 for arch in ["windows/amd64", "windows/386", "windows/arm64", "windows/arm"]:
     os_name, arch_name = arch.split("/")
