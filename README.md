@@ -1,4 +1,6 @@
-# 由于网页端wechat客户端功能不完全，现已放弃该项目，转而使用通过hook客户端方式的onebot v12实现方案。
+# 由于网页端wechat客户端功能不完全，现已放弃该项目，转而使用通过[hook客户端方式的onebot v12实现方案](https://github.com/barryblueice/Vanilla-Client)。
+
+# 新坑地址：[Vanilla-Client：又一个微信端的onebot v12实现](https://github.com/barryblueice/Vanilla-Client)
 
 ## 简介
 
